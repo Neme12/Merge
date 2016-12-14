@@ -2,10 +2,10 @@
 
 typedef struct codeFileSearcher_s {
     fileSearcher _searcher;
-    char* fileName;
+    string fileName;
 } codeFileSearcher;
 
-void codeFileSearcher_new(codeFileSearcher* searcher);
+void codeFileSearcher_new(codeFileSearcher* searcher, string directory);
 void codeFileSearcher_delete(codeFileSearcher* searcher);
 
 bool codeFileSearcher_findNext(codeFileSearcher* searcher);

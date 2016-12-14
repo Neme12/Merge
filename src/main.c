@@ -50,16 +50,24 @@ int main(int argc, char** argv)
 
 void mergeAll(char* outputFileName)
 {
+    string dir = string("");
+
     codeFileSearcher searcher;
-    codeFileSearcher_new(&searcher);
+    codeFileSearcher_new(&searcher, dir);
 
     merger merger;
     merger_new(&merger, outputFileName);
 
     while (codeFileSearcher_findNext(&searcher))
     {
-        if (!str_equals(searcher.fileName, outputFileName))
-            merger_merge(&merger, searcher.fileName);
+        char* formattedFileName = malloc(dir.length + searcher.fileName.length + 1);
+        string_concatIntoStr(dir, searcher.fileName, formattedFileName);
+        str_terminate(formattedFileName, dir.length + searcher.fileName.length);
+
+        if (!str_equals(formattedFileName, outputFileName))
+            merger_merge(&merger, formattedFileName);
+
+        free(formattedFileName);
     }
 
     merger_delete(&merger);

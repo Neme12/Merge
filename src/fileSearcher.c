@@ -1,12 +1,33 @@
+#include <stdlib.h>
+#include "str.h"
 #include "fileSearcher.h"
 
-void fileSearcher_new(fileSearcher* searcher)
+char* formatDir(string directory)
+{
+    char* formatted;
+#if WIN32
+    formatted = malloc(directory.length + 1 + 1);
+    string_concatIntoStr(directory, string("*"), formatted);
+    str_terminate(formatted, directory.length + 1);
+#else
+    formatted = malloc(2 + directory.length + 1);
+    string_concatIntoStr(string("./"), directory, formatted);
+    str_terminate(formatted, 2 + directory.length);
+#endif
+    return formatted;
+}
+
+void fileSearcher_new(fileSearcher* searcher, string directory)
 {
 #if WIN32
     searcher->_findHandle = NULL;
 #else
-    searcher->_dir = opendir(".");
+    char* formatted = formatDir(directory);
+    searcher->_dir = opendir(formatted);
+    free(formatted);
 #endif
+    searcher->directory = directory;
+    searcher->fileName = string_empty();
 }
 
 void fileSearcher_delete(fileSearcher* searcher)
@@ -23,7 +44,10 @@ bool fileSearcher_findNext(fileSearcher* searcher)
 #if WIN32
         if (searcher->_findHandle == NULL)
         {
-            searcher->_findHandle = FindFirstFileA("*", &searcher->_findData);
+            char* formatted = formatDir(searcher->directory);
+            searcher->_findHandle = FindFirstFileA(formatted, &searcher->_findData);
+            free(formatted);
+
             if (searcher->_findHandle == INVALID_HANDLE_VALUE)
                 return false;
         }
@@ -34,14 +58,14 @@ bool fileSearcher_findNext(fileSearcher* searcher)
                 return false;
         }
 
-        searcher->current = searcher->_findData.cFileName;
+        searcher->fileName = string_fromStr(searcher->_findData.cFileName);
         return true;
 #else
         searcher->_dirData = readdir(searcher->_dir);
         if (searcher->_dirData == NULL)
             return false;
 
-        searcher->current = searcher->_dirData->d_name;
+        searcher->fileName = string_fromStr(searcher->_dirData->d_name);
         return true;
 #endif
 }

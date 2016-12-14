@@ -1,7 +1,7 @@
 #include <stdio.h>
-
 #include <stdlib.h>
 #include <string.h>
+#include "str.h"
 #include "fileNameWithT.h"
 #include "merger.h"
 
@@ -91,7 +91,7 @@ bool merger_handleInclude(merger* this, string line)
     {
         arrayList_string_add(&this->includedFiles, fileNameWithT);
 
-        includedFileName.data[includedFileName.length] = '\0';
+        str_terminate(includedFileName.data, includedFileName.length);
         merger_includeFile(this, includedFileName.data);
     }
     else

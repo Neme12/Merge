@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include "string.h"
 
 #if WIN32
 #include <windows.h>
@@ -14,10 +15,11 @@ typedef struct fileSearcher_s {
     DIR* _dir;
     struct dirent* _dirData;
 #endif
-    char* current;
+    string directory;
+    string fileName;
 } fileSearcher;
 
-void fileSearcher_new(fileSearcher* searcher);
+void fileSearcher_new(fileSearcher* searcher, string directory);
 void fileSearcher_delete(fileSearcher* searcher);
 
 bool fileSearcher_findNext(fileSearcher* searcher);

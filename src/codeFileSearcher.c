@@ -1,9 +1,9 @@
 #include "string.h"
 #include "codeFileSearcher.h"
 
-void codeFileSearcher_new(codeFileSearcher* searcher)
+void codeFileSearcher_new(codeFileSearcher* searcher, string directory)
 {
-    fileSearcher_new(&searcher->_searcher);
+    fileSearcher_new(&searcher->_searcher, directory);
 }
 
 void codeFileSearcher_delete(codeFileSearcher* searcher)
@@ -19,10 +19,9 @@ bool codeFileSearcher_findNext(codeFileSearcher* searcher)
         if (!foundNext)
             return false;
 
-        string fileName = string_fromStr(searcher->_searcher.current);
-        if (string_endsWithString(fileName, string(".c")))
+        if (string_endsWithString(searcher->_searcher.fileName, string(".c")))
         {
-            searcher->fileName = fileName.data;
+            searcher->fileName = searcher->_searcher.fileName;
             return true;
         }
     }
