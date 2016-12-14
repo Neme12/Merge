@@ -68,9 +68,6 @@
     <ClInclude Include="src\fileLineWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\arrayList_c.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\fileSearcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -84,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\args.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\arrayList.c.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

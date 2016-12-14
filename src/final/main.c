@@ -1,8 +1,22 @@
 // args.c
 
 #include <stdbool.h>
-#include <string.h>
+#include <stdlib.h>
+// #include "str.h"
+// {
+#include <stdbool.h>
 
+void str_terminate(char* str, int length);
+
+int str_firstIndexOf(const char* str, char value);
+
+bool str_startsWith(const char* str, char value);
+bool str_startsWithStr(const char* str, const char* value);
+
+int str_compare(const char* str1, const char* str2);
+bool str_equals(const char* str1, const char* str2);
+
+// }
 // #include "args.h"
 // {
 bool args_contains(int argc, char* argv[], char* value);
@@ -26,7 +40,7 @@ bool args_contains(int argc, char* argv[], char* value)
 {
     for (int i = 0; i < argc; ++i)
     {
-        if (strcmp(argv[i], value) == 0)
+        if (str_equals(argv[i], value))
             return true;
     }
 
@@ -100,6 +114,10 @@ void string_copyInto(string source, string out);
 void string_concatInto(string s1, string s2, string out);
 void string_concat3Into(string s1, string s2, string s3, string out);
 
+void string_copyIntoStr(string source, char* out);
+void string_concatIntoStr(string s1, string s2, char* out);
+void string_concat3IntoStr(string s1, string s2, string s3, char* out);
+
 int string_firstIndexOf(string s, char value);
 int string_lastIndexOf(string s, char value);
 
@@ -128,7 +146,7 @@ string splitIterator_rest(splitIterator* this);
 // }
 
 #define T char
-// #include "arrayList_c.h"
+// #include "arrayList.c.h"
 // {
 #include <stdlib.h>
 // #include "arrayList.h"
@@ -194,7 +212,7 @@ bool arrayList_(contains, T)(arrayList(T)* list, T item, bool equals(T a, T b))
 #undef T
 
 #define T string
-// #include "arrayList_c.h"
+// #include "arrayList.c.h"
 // {
 #include <stdlib.h>
 // #include "arrayList.h"
@@ -379,11 +397,11 @@ bool fileLineReader_readLine(fileLineReader* reader)
 
     while (true)
     {
-        char c = fgetc(reader->_file);
+        int c = fgetc(reader->_file);
         if (c == EOF || c == '\n')
             break;
 
-        arrayList_char_add(&reader->_list, c);
+        arrayList_char_add(&reader->_list, (char)c);
     }
 
     reader->current = string_from(reader->_list.data, reader->_list.length);
@@ -530,8 +548,7 @@ bool fileSearcher_findNextFile(fileSearcher* searcher)
 
 // main.c
 
-#include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 // #include "codeFileSearcher.h"
 // #include "merger.h"
 // {
@@ -565,14 +582,13 @@ bool merger_handleUndefine(merger* this, splitIterator split);
 bool merger_handlePragma(merger* this, splitIterator split);
 
 // }
+// #include "args.h"
+// #include "str.h"
 // #include "main.h"
 // {
 void mergeAll(char* outputFileName);
 
 // }
-// #include "args.h"
-
-#include <stdlib.h>
 
 char* makeFileName(string value, string defaultName)
 {
@@ -581,15 +597,14 @@ char* makeFileName(string value, string defaultName)
     if (string_endsWith(value, '/'))
     {
         fileName = malloc(value.length + defaultName.length + 1);
-        strncpy(fileName, value.data, value.length);
-        strncpy(fileName + value.length, defaultName.data, defaultName.length);
-        fileName[value.length + defaultName.length] = '\0';
+        string_concatIntoStr(value, defaultName, fileName);
+        str_terminate(fileName, value.length + defaultName.length);
     }
     else
     {
         fileName = malloc(value.length + 1);
-        strncpy(fileName, value.data, value.length);
-        fileName[value.length] = '\0';
+        string_copyIntoStr(value, fileName);
+        str_terminate(fileName, value.length);
     }
 
     return fileName;
@@ -602,7 +617,7 @@ int main(int argc, char** argv)
     args_optional o = args_optionalFrom(argc, argv);
     while (args_optional_next(&o))
     {
-        if (strcmp(o.current, "-o") == 0)
+        if (str_equals(o.current, "-o"))
         {
             outputFileName = makeFileName(string_fromStr(o.value), string("main.c"));
             break;
@@ -628,7 +643,7 @@ void mergeAll(char* outputFileName)
 
     while (codeFileSearcher_findNext(&searcher))
     {
-        if (strcmp(searcher.fileName, outputFileName) != 0)
+        if (!str_equals(searcher.fileName, outputFileName))
             merger_merge(&merger, searcher.fileName);
     }
 
@@ -785,16 +800,13 @@ bool merger_handlePragma(merger* this, splitIterator split)
 
 // str.c
 
+#include <string.h>
 // #include "str.h"
-// {
-#include <stdbool.h>
 
-int str_firstIndexOf(const char* str, char value);
-
-bool str_startsWith(const char* str, char value);
-bool str_startsWithStr(const char* str, const char* value);
-
-// }
+void str_terminate(char* str, int length)
+{
+    str[length] = '\0';
+}
 
 int str_firstIndexOf(const char* str, char value)
 {
@@ -824,6 +836,16 @@ bool str_startsWithStr(const char* str, const char* value)
     }
 
     return true;
+}
+
+int str_compare(const char* str1, const char* str2)
+{
+    return strcmp(str1, str2);
+}
+
+bool str_equals(const char* str1, const char* str2)
+{
+    return strcmp(str1, str2) == 0;
 }
 
 // string.c
@@ -917,20 +939,35 @@ string string_substringFromTo(string s, int fromIndex, int toIndex)
 
 void string_copyInto(string source, string out)
 {
-    strncpy(out.data, source.data, source.length);
+    string_copyIntoStr(source, out.data);
 }
 
 void string_concatInto(string s1, string s2, string out)
 {
-    strncpy(out.data, s1.data, s1.length);
-    strncpy(out.data + s1.length, s2.data, s2.length);
+    string_concatIntoStr(s1, s2, out.data);
 }
 
 void string_concat3Into(string s1, string s2, string s3, string out)
 {
-    strncpy(out.data, s1.data, s1.length);
-    strncpy(out.data + s1.length, s2.data, s2.length);
-    strncpy(out.data + s1.length + s2.length, s3.data, s3.length);
+    string_concat3IntoStr(s1, s2, s3, out.data);
+}
+
+void string_copyIntoStr(string source, char* out)
+{
+    strncpy(out, source.data, source.length);
+}
+
+void string_concatIntoStr(string s1, string s2, char* out)
+{
+    strncpy(out, s1.data, s1.length);
+    strncpy(out + s1.length, s2.data, s2.length);
+}
+
+void string_concat3IntoStr(string s1, string s2, string s3, char* out)
+{
+    strncpy(out, s1.data, s1.length);
+    strncpy(out + s1.length, s2.data, s2.length);
+    strncpy(out + s1.length + s2.length, s3.data, s3.length);
 }
 
 int string_firstIndexOf(string s, char value)

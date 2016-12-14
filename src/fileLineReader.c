@@ -22,11 +22,11 @@ bool fileLineReader_readLine(fileLineReader* reader)
 
     while (true)
     {
-        char c = fgetc(reader->_file);
+        int c = fgetc(reader->_file);
         if (c == EOF || c == '\n')
             break;
 
-        arrayList_char_add(&reader->_list, c);
+        arrayList_char_add(&reader->_list, (char)c);
     }
 
     reader->current = string_from(reader->_list.data, reader->_list.length);

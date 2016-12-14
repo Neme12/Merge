@@ -1,13 +1,13 @@
 #include <stdbool.h>
-#include <string.h>
-
+#include <stdlib.h>
+#include "str.h"
 #include "args.h"
 
 bool args_contains(int argc, char* argv[], char* value)
 {
     for (int i = 0; i < argc; ++i)
     {
-        if (strcmp(argv[i], value) == 0)
+        if (str_equals(argv[i], value))
             return true;
     }
 

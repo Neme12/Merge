@@ -1,4 +1,10 @@
+#include <string.h>
 #include "str.h"
+
+void str_terminate(char* str, int length)
+{
+    str[length] = '\0';
+}
 
 int str_firstIndexOf(const char* str, char value)
 {
@@ -28,4 +34,14 @@ bool str_startsWithStr(const char* str, const char* value)
     }
 
     return true;
+}
+
+int str_compare(const char* str1, const char* str2)
+{
+    return strcmp(str1, str2);
+}
+
+bool str_equals(const char* str1, const char* str2)
+{
+    return strcmp(str1, str2) == 0;
 }

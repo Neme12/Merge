@@ -1,11 +1,9 @@
-#include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 #include "codeFileSearcher.h"
 #include "merger.h"
-#include "main.h"
 #include "args.h"
-
-#include <stdlib.h>
+#include "str.h"
+#include "main.h"
 
 char* makeFileName(string value, string defaultName)
 {
@@ -14,15 +12,14 @@ char* makeFileName(string value, string defaultName)
     if (string_endsWith(value, '/'))
     {
         fileName = malloc(value.length + defaultName.length + 1);
-        strncpy(fileName, value.data, value.length);
-        strncpy(fileName + value.length, defaultName.data, defaultName.length);
-        fileName[value.length + defaultName.length] = '\0';
+        string_concatIntoStr(value, defaultName, fileName);
+        str_terminate(fileName, value.length + defaultName.length);
     }
     else
     {
         fileName = malloc(value.length + 1);
-        strncpy(fileName, value.data, value.length);
-        fileName[value.length] = '\0';
+        string_copyIntoStr(value, fileName);
+        str_terminate(fileName, value.length);
     }
 
     return fileName;
@@ -35,7 +32,7 @@ int main(int argc, char** argv)
     args_optional o = args_optionalFrom(argc, argv);
     while (args_optional_next(&o))
     {
-        if (strcmp(o.current, "-o") == 0)
+        if (str_equals(o.current, "-o"))
         {
             outputFileName = makeFileName(string_fromStr(o.value), string("main.c"));
             break;
@@ -61,7 +58,7 @@ void mergeAll(char* outputFileName)
 
     while (codeFileSearcher_findNext(&searcher))
     {
-        if (strcmp(searcher.fileName, outputFileName) != 0)
+        if (!str_equals(searcher.fileName, outputFileName))
             merger_merge(&merger, searcher.fileName);
     }
 

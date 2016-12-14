@@ -30,6 +30,10 @@ void string_copyInto(string source, string out);
 void string_concatInto(string s1, string s2, string out);
 void string_concat3Into(string s1, string s2, string s3, string out);
 
+void string_copyIntoStr(string source, char* out);
+void string_concatIntoStr(string s1, string s2, char* out);
+void string_concat3IntoStr(string s1, string s2, string s3, char* out);
+
 int string_firstIndexOf(string s, char value);
 int string_lastIndexOf(string s, char value);
 

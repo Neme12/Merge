@@ -87,20 +87,35 @@ string string_substringFromTo(string s, int fromIndex, int toIndex)
 
 void string_copyInto(string source, string out)
 {
-    strncpy(out.data, source.data, source.length);
+    string_copyIntoStr(source, out.data);
 }
 
 void string_concatInto(string s1, string s2, string out)
 {
-    strncpy(out.data, s1.data, s1.length);
-    strncpy(out.data + s1.length, s2.data, s2.length);
+    string_concatIntoStr(s1, s2, out.data);
 }
 
 void string_concat3Into(string s1, string s2, string s3, string out)
 {
-    strncpy(out.data, s1.data, s1.length);
-    strncpy(out.data + s1.length, s2.data, s2.length);
-    strncpy(out.data + s1.length + s2.length, s3.data, s3.length);
+    string_concat3IntoStr(s1, s2, s3, out.data);
+}
+
+void string_copyIntoStr(string source, char* out)
+{
+    strncpy(out, source.data, source.length);
+}
+
+void string_concatIntoStr(string s1, string s2, char* out)
+{
+    strncpy(out, s1.data, s1.length);
+    strncpy(out + s1.length, s2.data, s2.length);
+}
+
+void string_concat3IntoStr(string s1, string s2, string s3, char* out)
+{
+    strncpy(out, s1.data, s1.length);
+    strncpy(out + s1.length, s2.data, s2.length);
+    strncpy(out + s1.length + s2.length, s3.data, s3.length);
 }
 
 int string_firstIndexOf(string s, char value)
