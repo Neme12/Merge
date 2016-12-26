@@ -152,11 +152,9 @@
   <ItemGroup>
     <ClCompile Include="src\args.c" />
     <ClCompile Include="src\arrayList.c" />
-    <ClCompile Include="src\codeFileSearcher.c" />
     <ClCompile Include="src\fileLineReader.c" />
     <ClCompile Include="src\fileLineWriter.c" />
     <ClCompile Include="src\fileNameWithT.c" />
-    <ClCompile Include="src\fileSearcher.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\merger.c" />
     <ClCompile Include="src\str.c" />
@@ -166,11 +164,9 @@
     <ClInclude Include="src\args.h" />
     <ClInclude Include="src\arrayList.h" />
     <ClInclude Include="src\arrayList.c.h" />
-    <ClInclude Include="src\codeFileSearcher.h" />
     <ClInclude Include="src\fileLineReader.h" />
     <ClInclude Include="src\fileLineWriter.h" />
     <ClInclude Include="src\fileNameWithT.h" />
-    <ClInclude Include="src\fileSearcher.h" />
     <ClInclude Include="src\generics.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\merger.h" />

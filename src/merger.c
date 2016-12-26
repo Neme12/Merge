@@ -5,11 +5,24 @@
 #include "fileNameWithT.h"
 #include "merger.h"
 
-void merger_new(merger* this, char* outputFileName, arrayList_string excludedFiles)
+char* makePath(string dir, string fileName)
 {
+    char* path = malloc((dir.length + fileName.length + 1) * sizeof(char));
+    string_concatIntoStr(dir, fileName, path);
+    str_terminate(path, dir.length + fileName.length);
+    return path;
+}
+
+void merger_new(merger* this, string outputDir, string outputFileName, arrayList_string externalFiles)
+{
+    this->outputDir = outputDir;
     this->definedT = string_empty();
-    this->excludedFiles = excludedFiles;
-    fileLineWriter_new(&this->writer, outputFileName);
+    this->externalFiles = externalFiles;
+
+    char* outputPath = makePath(outputDir, outputFileName);
+    fileLineWriter_new(&this->writer, outputPath);
+    free(outputPath);
+
     arrayList_string_new(&this->includedFiles);
 }
 
@@ -89,20 +102,40 @@ bool merger_handleInclude(merger* this, string line)
     string includedFileName = string_substringFromTo(line, firstQuote + 1, lastQuote);
     string fileNameWithT = fileNameWithT_newFrom(includedFileName, this->definedT);
 
-    fileLineWriter_write(&this->writer, string("// "));
+    bool wasIncluded = arrayList_string_contains(&this->includedFiles, fileNameWithT, string_equals);
+    bool isExternal = arrayList_string_contains(&this->externalFiles, includedFileName, string_equals);
+
+    bool includeExternal = isExternal && !wasIncluded;
+
+    if (!includeExternal)
+        fileLineWriter_write(&this->writer, string("// "));
     fileLineWriter_writeLine(&this->writer, line);
 
-    if (!arrayList_string_contains(&this->includedFiles, fileNameWithT, string_equals)
-     && !arrayList_string_contains(&this->excludedFiles, includedFileName, string_equals))
+    if (wasIncluded)
     {
-        arrayList_string_add(&this->includedFiles, fileNameWithT);
+        string_delete(fileNameWithT);
+        return true;
+    }
+    
+    arrayList_string_add(&this->includedFiles, fileNameWithT);
+    str_terminate(includedFileName.data, includedFileName.length);
 
-        str_terminate(includedFileName.data, includedFileName.length);
+    if (isExternal)
+    {
+        fileLineWriter mainWriter = this->writer;
+
+        char* externalPath = makePath(this->outputDir, includedFileName);
+        fileLineWriter_new(&this->writer, externalPath);
+        free(externalPath);
+
         merger_includeFile(this, includedFileName.data);
+
+        fileLineWriter_delete(&this->writer);
+        this->writer = mainWriter;
     }
     else
     {
-        string_delete(fileNameWithT);
+        merger_includeFile(this, includedFileName.data);
     }
 
     return true;

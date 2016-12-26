@@ -8,12 +8,13 @@
 
 typedef struct merger {
     fileLineWriter writer;
+    string outputDir;
     arrayList_string includedFiles;
-    arrayList_string excludedFiles;
+    arrayList_string externalFiles;
     string definedT;
 } merger;
 
-void merger_new(merger* this, char* outputFileName, arrayList_string excludedFiles);
+void merger_new(merger* this, string outputDir, string outputFileName, arrayList_string externalFiles);
 void merger_delete(merger* this);
 
 void merger_merge(merger* this, char* fileName);

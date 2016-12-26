@@ -1,1 +1,1 @@
-void mergeAll(char* outputFileName, arrayList_string excludedFiles);
+void mergeFiles(arrayList_string files, arrayList_string externalFiles, string outputDir);
