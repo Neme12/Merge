@@ -12,7 +12,7 @@ typedef struct fileLineReader_s {
     string current;
 } fileLineReader;
 
-void fileLineReader_new(fileLineReader* reader, char* fileName);
+bool fileLineReader_new(fileLineReader* reader, char* fileName);
 void fileLineReader_delete(fileLineReader* reader);
 
 bool fileLineReader_readLine(fileLineReader* reader);

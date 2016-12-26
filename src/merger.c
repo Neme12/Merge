@@ -40,7 +40,11 @@ void merger_includeFile(merger* this, char* fileName)
 void merger_mergeFile(merger* this, char* fileName)
 {
     fileLineReader reader;
-    fileLineReader_new(&reader, fileName);
+    if (!fileLineReader_new(&reader, fileName))
+    {
+        fprintf(stderr, "Error: Cannot open file %s\n", fileName);
+        return;
+    }
     
     while (fileLineReader_readLine(&reader))
         merger_mergeLine(this, reader.current);

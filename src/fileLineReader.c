@@ -1,9 +1,12 @@
 #include "fileLineReader.h"
 
-void fileLineReader_new(fileLineReader* reader, char* fileName)
+bool fileLineReader_new(fileLineReader* reader, char* fileName)
 {
-    reader->_file = fopen(fileName, "r");
+    if ((reader->_file = fopen(fileName, "r")) == NULL)
+        return false;
+
     arrayList_char_new(&reader->_list);
+    return true;
 }
 
 void fileLineReader_delete(fileLineReader* reader)
