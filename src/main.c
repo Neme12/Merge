@@ -27,28 +27,33 @@ char* makeFileName(string value, string defaultName)
 
 int main(int argc, char** argv)
 {
+    arrayList_string excludedFiles;
+    arrayList_string_new(&excludedFiles);
     char* outputFileName = NULL;
 
-    args_optional o = args_optionalFrom(argc, argv);
-    while (args_optional_next(&o))
+    args a = args_from(argc, argv);
+    while (args_next(&a))
     {
-        if (str_equals(o.current, "-o"))
-        {
-            outputFileName = makeFileName(string_fromStr(o.value), string("main.c"));
-            break;
-        }
+        if (a.current == NULL)
+            continue;
+
+        if (str_equals(a.current, "-o") && outputFileName == NULL)
+            outputFileName = makeFileName(string_fromStr(a.value), string("main.c"));
+        else if (str_equals(a.current, "-e"))
+            arrayList_string_add(&excludedFiles, string_fromStr(a.value));
     }
 
     if (outputFileName == NULL)
         outputFileName = makeFileName(string("final/"), string("main.c"));
 
-    mergeAll(outputFileName);
+    mergeAll(outputFileName, excludedFiles);
 
     free(outputFileName);
+    arrayList_string_delete(&excludedFiles);
     return 0;
 }
 
-void mergeAll(char* outputFileName)
+void mergeAll(char* outputFileName, arrayList_string excludedFiles)
 {
     string dir = string("");
 
@@ -56,7 +61,7 @@ void mergeAll(char* outputFileName)
     codeFileSearcher_new(&searcher, dir);
 
     merger merger;
-    merger_new(&merger, outputFileName);
+    merger_new(&merger, outputFileName, excludedFiles);
 
     while (codeFileSearcher_findNext(&searcher))
     {

@@ -1,1 +1,1 @@
-void mergeAll(char* outputFileName);
+void mergeAll(char* outputFileName, arrayList_string excludedFiles);

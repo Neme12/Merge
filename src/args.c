@@ -14,30 +14,26 @@ bool args_contains(int argc, char* argv[], char* value)
     return false;
 }
 
-args_optional args_optionalFrom(int argc, char* argv[])
+args args_from(int argc, char* argv[])
 {
-    args_optional this;
+    args this;
     this.argc = argc;
     this.argv = argv;
     this.index = 0;
+    this.current = NULL;
     return this;
 }
 
-bool args_optional_next(args_optional* this)
+bool args_next(args* this)
 {
-    while (true)
+    if (this->index >= this->argc)
+        return false;
+
+    if (this->argv[this->index][0] == '-')
     {
-        if (this->index >= this->argc)
-            return false;
-
-        if (this->argv[this->index][0] == '-')
-            break;  
-
+        this->current = this->argv[this->index];
         this->index += 1;
     }
-
-    this->current = this->argv[this->index];
-    this->index += 1;
 
     this->value = this->index >= this->argc ? NULL : this->argv[this->index];
     this->index += 1;

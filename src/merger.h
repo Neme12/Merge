@@ -9,10 +9,11 @@
 typedef struct merger {
     fileLineWriter writer;
     arrayList_string includedFiles;
+    arrayList_string excludedFiles;
     string definedT;
 } merger;
 
-void merger_new(merger* this, char* outputFileName);
+void merger_new(merger* this, char* outputFileName, arrayList_string excludedFiles);
 void merger_delete(merger* this);
 
 void merger_merge(merger* this, char* fileName);

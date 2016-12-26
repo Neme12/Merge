@@ -5,9 +5,10 @@
 #include "fileNameWithT.h"
 #include "merger.h"
 
-void merger_new(merger* this, char* outputFileName)
+void merger_new(merger* this, char* outputFileName, arrayList_string excludedFiles)
 {
     this->definedT = string_empty();
+    this->excludedFiles = excludedFiles;
     fileLineWriter_new(&this->writer, outputFileName);
     arrayList_string_new(&this->includedFiles);
 }
@@ -91,7 +92,8 @@ bool merger_handleInclude(merger* this, string line)
     fileLineWriter_write(&this->writer, string("// "));
     fileLineWriter_writeLine(&this->writer, line);
 
-    if (!arrayList_string_contains(&this->includedFiles, fileNameWithT, string_equals))
+    if (!arrayList_string_contains(&this->includedFiles, fileNameWithT, string_equals)
+     && !arrayList_string_contains(&this->excludedFiles, includedFileName, string_equals))
     {
         arrayList_string_add(&this->includedFiles, fileNameWithT);
 
