@@ -1,9 +1,9 @@
 #include "string.h"
 
-#define T char
+#define TYPE char, char
 #include "arrayList.c.h"
-#undef T
+#undef TYPE
 
-#define T string
+#define TYPE string, string
 #include "arrayList.c.h"
-#undef T
+#undef TYPE

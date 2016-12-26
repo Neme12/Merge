@@ -1,20 +1,19 @@
 #include <stdbool.h>
+#include "generics.h"
 
-#define TNAME(TYPE) arrayList ## _ ## TYPE
-#define FNAME(NAME, TYPE) arrayList ## _ ## TYPE ## _ ## NAME
+#define arrayList_t T_NAME(arrayList, TAlias)
+#define arrayList_(NAME) F_NAME(arrayList, TAlias, NAME)
 
-#define arrayList(TYPE) TNAME(TYPE)
-#define arrayList_(NAME, TYPE) FNAME(NAME, TYPE)
-
-typedef struct arrayList(T) {
+typedef struct arrayList_t {
     T* data;
     int capacity;
     int length;
-} arrayList(T);
+} arrayList_t;
 
-void arrayList_(new, T)(arrayList(T)* list);
-void arrayList_(delete, T)(arrayList(T)* list);
+void arrayList_(new)(arrayList_t* list);
+void arrayList_(delete)(arrayList_t* list);
 
-void arrayList_(add, T)(arrayList(T)* list, T item);
+void arrayList_(add)(arrayList_t* list, T item);
+void arrayList_(clear)(arrayList_t* list);
 
-bool arrayList_(contains, T)(arrayList(T)* list, T item, bool equals(T a, T b));
+bool arrayList_(contains)(arrayList_t* list, T item, bool equals(T a, T b));

@@ -110,7 +110,7 @@ bool merger_handleDefine(merger* this, splitIterator split)
     splitIterator_next(&split);
     string value = split.current;
 
-    if (string_equals(symbol, string("T")))
+    if (string_equals(symbol, string("TYPE")))
     {
         this->definedT = string_newClone(value);
     }
@@ -123,7 +123,7 @@ bool merger_handleUndefine(merger* this, splitIterator split)
     splitIterator_next(&split);
     string symbol = split.current;
 
-    if (string_equals(symbol, string("T")))
+    if (string_equals(symbol, string("TYPE")))
     {
         string_delete(this->definedT);
         this->definedT = string_empty();

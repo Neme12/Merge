@@ -2,9 +2,9 @@
 #include "fileLineReader.h"
 #include "fileLineWriter.h"
 
-#define T string
+#define TYPE string, string
 #include "arrayList.h"
-#undef T
+#undef TYPE
 
 typedef struct merger {
     fileLineWriter writer;

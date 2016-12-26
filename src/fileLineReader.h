@@ -2,9 +2,9 @@
 #include <stdbool.h>
 #include "string.h"
 
-#define T char
+#define TYPE char, char
 #include "arrayList.h"
-#undef T
+#undef TYPE
 
 typedef struct fileLineReader_s {
     FILE* _file;
