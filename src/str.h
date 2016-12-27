@@ -1,5 +1,8 @@
 #include <stdbool.h>
 
+char* str_newTerminated(int length);
+void str_delete(char* str);
+
 void str_terminate(char* str, int length);
 
 int str_firstIndexOf(const char* str, char value);

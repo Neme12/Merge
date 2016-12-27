@@ -7,9 +7,8 @@
 
 char* makePath(string dir, string fileName)
 {
-    char* path = malloc((dir.length + fileName.length + 1) * sizeof(char));
+    char* path = str_newTerminated(dir.length + fileName.length);
     string_concatIntoStr(dir, fileName, path);
-    str_terminate(path, dir.length + fileName.length);
     return path;
 }
 

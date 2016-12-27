@@ -1,6 +1,18 @@
 #include <string.h>
 #include "str.h"
 
+char* str_newTerminated(int length)
+{
+    char* str = malloc((length + 1) * sizeof(char));
+    str_terminate(str, length);
+    return str;
+}
+
+void str_delete(char* str)
+{
+    free(str);
+}
+
 void str_terminate(char* str, int length)
 {
     str[length] = '\0';
